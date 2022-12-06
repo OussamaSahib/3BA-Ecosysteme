@@ -41,7 +41,8 @@
                 BorderWidth="10"
                 FontSize="48"
                 FontFamily="Comic Sans MS"
-                TextColor="Black"/>
+                TextColor="Black"
+                Clicked="OnButton_Exit"/>
 
         </VerticalStackLayout>
     </ScrollView>
