@@ -3,8 +3,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Ecosysteme.MainPage"
+             Title="Menu Principal"
              BackgroundImageSource= "menu.jpg">
 
+    
     <ScrollView>
         <VerticalStackLayout
             Spacing="170"
@@ -30,7 +32,8 @@
                 BorderWidth="10"
                 FontSize="48"
                 FontFamily="Comic Sans MS"
-                TextColor="Black"/>
+                TextColor="Black"
+                Clicked="OnButton_Start"/>
 
             <!--BOUTTON EXIT QUITTANT LE JEU-->
             <Button
