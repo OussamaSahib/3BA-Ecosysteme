@@ -1,39 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--MENU PRINCIPAL-->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Ecosysteme.MainPage">
+             x:Class="Ecosysteme.MainPage"
+             BackgroundImageSource= "menu.jpg">
 
     <ScrollView>
         <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
+            Spacing="170"
+            Padding="10"
             VerticalOptions="Center">
-
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
+            
+            <!--TITRE-->
             <Label
-                Text="Hello, World!"
+                Text="ÉCOSYSTÈME"
                 SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                FontSize="72"
+                FontFamily="Comic Sans MS"
+                TextColor="Black"
+                TextDecorations="Underline"/>
 
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
-
+            <!--BOUTTON START ALLANT A LA PAGE DU JEU-->
             <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
+                Text="START"
+                HorizontalOptions="Center" 
+                BackgroundColor="Purple"
+                BorderColor="Black"
+                BorderWidth="10"
+                FontSize="48"
+                FontFamily="Comic Sans MS"
+                TextColor="Black"/>
+
+            <!--BOUTTON EXIT QUITTANT LE JEU-->
+            <Button
+                Text="EXIT"
+                HorizontalOptions="Center" 
+                BackgroundColor="Red"
+                BorderColor="Black"
+                BorderWidth="10"
+                FontSize="48"
+                FontFamily="Comic Sans MS"
+                TextColor="Black"/>
 
         </VerticalStackLayout>
     </ScrollView>
