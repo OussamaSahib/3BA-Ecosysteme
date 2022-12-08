@@ -10,8 +10,8 @@ namespace Ecosysteme
         {
             objects= new List<SimulationObjet>();
 
-            objects.Add(new Animal(300, 100));
-            objects.Add(new Plante(50, 100));
+            objects.Add(new Animal(900, 350));
+            objects.Add(new Plante(600, 350));
         }
 
         //Dessin dans Simulation
@@ -20,7 +20,7 @@ namespace Ecosysteme
             foreach (SimulationObjet drawable in objects)
             {
                 canvas.FillColor = drawable.Color;
-                canvas.FillCircle(new Point(drawable.X, drawable.Y), 27.0);
+                canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
             }
         }
 

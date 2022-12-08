@@ -9,7 +9,8 @@ namespace Ecosysteme
 
         public override void Update()
         {
-            //X= X + 5;
+            //Nb de pas
+            X= X + 30;
         }
     }
 }

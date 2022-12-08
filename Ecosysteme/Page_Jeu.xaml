@@ -7,10 +7,10 @@
              Title="Jeu"
              BackgroundColor="Black">
 
-    <!--Lien avec Page_jeu.xaml.cs-->
-<ContentPage.Resources>
-    <drawable:Simulation x:Key="simulation"/>
-</ContentPage.Resources>
+     <!--Lien avec Page_jeu.xaml.cs-->
+    <ContentPage.Resources>
+        <drawable:Simulation x:Key="simulation"/>
+    </ContentPage.Resources>
 
 
     <VerticalStackLayout>
@@ -18,8 +18,9 @@
         <GraphicsView 
                 x:Name="graphics"
                 Drawable="{StaticResource simulation}"
-                HeightRequest="832"
-                WidthRequest="500"/>
+                HeightRequest="1200"
+                WidthRequest="1800"
+                BackgroundColor="Black"/>
 
     </VerticalStackLayout>
     
