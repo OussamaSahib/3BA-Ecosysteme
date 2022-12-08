@@ -1,9 +1,11 @@
 namespace Ecosysteme;
 
-public partial class Page_Jeu : ContentPage
+public partial class Page_Jeu: ContentPage
 {
-	public Page_Jeu()
+    Simulation simulation;
+    public Page_Jeu()
 	{
 		InitializeComponent();
-	}
+        simulation= Resources["simulation"] as Simulation;
+    }
 }
