@@ -23,5 +23,17 @@ public partial class Page_Jeu: ContentPage
     {
         simulation.Update();
         graphics.Invalidate();
-    }    
+    }
+
+    /*FCT BOUTTON AJOUTER ANIMAL*/
+    private void OnButton_AddAnimal(object sender, EventArgs e)
+    {
+        simulation.Add_Animal();
+    }
+
+    /*FCT BOUTTON AJOUTER PLANTE*/
+    private void OnButton_AddPlante(object sender, EventArgs e)
+    {
+        simulation.Add_Plante();
+     }
 }

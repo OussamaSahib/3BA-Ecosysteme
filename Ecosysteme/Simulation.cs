@@ -14,12 +14,33 @@ namespace Ecosysteme
             objects.Add(new Plante(600, 350,75, 15, 15));
         }
 
-        //Dessin dans Simulation
+
+        //Position random dans la map
+        Random rnd = new Random();
+        int min_x = 0;
+        int max_x = 1800;
+        int min_y = 0;
+        int max_y = 700;
+        //FCT QUI AJOUTE 1 ANIMAL (-->AVEC BOUTTON)
+        public void Add_Animal()
+        {
+            objects.Add(new Animal(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
+        }
+
+        //FCT QUI AJOUTE 1 PLANTE (-->AVEC BOUTTON)
+        public void Add_Plante()
+        {
+            objects.Add(new Plante(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
+        }
+
+
+
+        //DESSIN DS SIMULATION
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             foreach (SimulationObjet drawable in objects)
             {
-                // ÊTRE VIVANT
+                //ÊTRE VIVANT
                 canvas.FillColor= drawable.Color;
                 canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
 
@@ -78,7 +99,7 @@ namespace Ecosysteme
             }
         }
 
-        //Update
+        //UPDATE
         public void Update()
         {
             foreach (SimulationObjet drawable in objects)
