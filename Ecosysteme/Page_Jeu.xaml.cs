@@ -9,11 +9,11 @@ public partial class Page_Jeu: ContentPage
     {
         InitializeComponent();
         //Execute Fichier Simulation.cs
-        simulation = Resources["simulation"] as Simulation;
+        simulation= Resources["simulation"] as Simulation;
 
         //Execute Fct Timer c-dessous
-        timer = Dispatcher.CreateTimer();
-        timer.Interval = TimeSpan.FromMilliseconds(300);
+        timer= Dispatcher.CreateTimer();
+        timer.Interval= TimeSpan.FromMilliseconds(500);
         timer.Tick += this.OnTimeEvent;
         timer.Start();
     }
@@ -23,7 +23,5 @@ public partial class Page_Jeu: ContentPage
     {
         simulation.Update();
         graphics.Invalidate();
-    }
-
-    
+    }    
 }

@@ -10,8 +10,8 @@ namespace Ecosysteme
         {
             objects= new List<SimulationObjet>();
 
-            objects.Add(new Animal(900, 350));
-            objects.Add(new Plante(600, 350));
+            objects.Add(new Animal(900, 350, 75));
+            objects.Add(new Plante(600, 350,75));
         }
 
         //Dessin dans Simulation
@@ -31,7 +31,7 @@ namespace Ecosysteme
                 
                 //Barre d'energie
                 canvas.FillColor = Colors.LimeGreen;
-                canvas.FillRoundedRectangle(Convert.ToSingle(drawable.X)-37, Convert.ToSingle(drawable.Y)-70, 75, 15, 5);
+                canvas.FillRoundedRectangle(Convert.ToSingle(drawable.X)-37, Convert.ToSingle(drawable.Y)-70, drawable.Energie, 15, 5);
              
 
                 //COEURS DE VIE

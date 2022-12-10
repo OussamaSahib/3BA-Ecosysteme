@@ -5,7 +5,7 @@ namespace Ecosysteme
 {
     public class Animal: SimulationObjet
     {
-        public Animal(double x, double y): base(Colors.Red, x, y){}
+        public Animal(double x, double y, int energie): base(Colors.Red, x, y, energie){}
 
         public override void Update()
         {
@@ -26,6 +26,12 @@ namespace Ecosysteme
 
             X= X +randomX;
             Y= Y +randomY;
+
+            //ENERGIE QUI DIMINUE
+            if(Energie>0)
+            {Energie= Energie-5;}
+            if(Energie<=0) 
+            {Energie= 0;}
         }
     }
 }
