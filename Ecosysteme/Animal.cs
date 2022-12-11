@@ -7,10 +7,9 @@ namespace Ecosysteme
     {
         public Animal(double x, double y, int energie, int vie1, int vie2): base(Colors.Red, x, y, energie, vie1, vie2){}
 
-        public override void Update()
-        {
-            //PAS RANDOM
-            //Nb de pas
+        //PAS RANDOM
+        public void Move()
+        {   //Nb de pas
             int pas= 30;
             //Pour X: Rien, Gauche, Droite
             List<int>numbersX= new List<int>() {0, -pas, pas};
@@ -23,25 +22,40 @@ namespace Ecosysteme
             int randomX= numbersX[randIndexX];
             int randIndexY= rnd.Next(numbersY.Count);
             int randomY= numbersY[randIndexY];
-
+                
             X= X +randomX;
             Y= Y +randomY;
+        }
+        
 
 
-            //ENERGIE QUI DIMINUE
+        //ENERGIE+VIE QUI DIMINUE
+        public void Energie_Vie()
+        {   //Energie qui diminue
             if(Energie>0)
             {Energie= Energie-5;}
             if(Energie<0) 
             {Energie= 0;}
 
-            //VIE QUI DIMINUE
+            //Vie qui diminue
             if(Energie==0 && Vie1!=0 && Vie2!=0)
             {Vie1= 0;
-             Energie= 75;}
+            Energie= 75;}
 
             if(Energie==0 && Vie1==0 && Vie2!=0)
             {Vie2= 0;
-             Energie= 0;}
+            Energie= 0;}
+        }
+
+
+
+        public override void Update()
+        {   //PAS RANDOM
+            Move();
+
+            //ENERGIE+VIE QUI DIMINUE
+            Energie_Vie();
+
         }
     }
 }
