@@ -3,7 +3,7 @@
 //CLASSE ANIMAL
 namespace Ecosysteme
 {
-    public class Animal: SimulationObjet
+    public class Animal: EtreVivant
     {
         public Animal(double x, double y, int energie, int vie1, int vie2): base(Colors.Red, x, y, energie, vie1, vie2){}
 
