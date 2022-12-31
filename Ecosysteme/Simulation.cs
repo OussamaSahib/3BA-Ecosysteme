@@ -1,4 +1,6 @@
 ﻿//FICHIER REPRENANT SIMULATIONOBJET POUR Y INTEGRER LES ELEMENTS
+using Microsoft.Maui.Graphics;
+
 namespace Ecosysteme
 {
     //NB: Pour IDrawable, ds Page_Jeu.xaml, ds ContentPage, rajouter lien
@@ -41,12 +43,19 @@ namespace Ecosysteme
             //AJOUT/SUPPRESSION ETRE VIVANT DE LA LISTE
             foreach (SimulationObjet item in objects.ToList())
             {
-                //MORT:ETRE VIVANT-->VIANDE
+                //ETRE VIVANT MORT-->VIANDE
                 if ((item.GetType()==typeof(Animal) || item.GetType()==typeof(Plante)) && item.Vie2==0)
                 {
                     objects.Add(new Viande(item.X, item.Y, 75));
                     objects.Remove(item);
                 };
+
+                //VIANDE-->DECHET
+                if (item.GetType()==typeof(Viande) && item.Vie_Viande==0)
+                {
+                    objects.Add(new Dechet(item.X, item.Y));
+                    objects.Remove(item);
+                }
             }
 
 
@@ -136,6 +145,35 @@ namespace Ecosysteme
                     canvas.FillRoundedRectangle(Convert.ToSingle(drawable.X)-47, Convert.ToSingle(drawable.Y)-20, 75, 15, 5);
                     canvas.FillColor= Colors.LimeGreen;
                     canvas.FillRoundedRectangle(Convert.ToSingle(drawable.X)-47, Convert.ToSingle(drawable.Y)-20, drawable.Vie_Viande, 15, 5);
+                }
+
+
+                //DECHET
+                if (drawable.GetType()==typeof(Dechet))
+                {
+                    //Partie petit
+                    //Remplissage +Contour -->(x, y, longueur, hauteur)
+                    canvas.FillColor= drawable.Color;
+                    canvas.FillEllipse(Convert.ToSingle(drawable.X)+10, Convert.ToSingle(drawable.Y)-16, 15, 15);
+                    canvas.StrokeColor= Colors.Black;
+                    canvas.StrokeSize= 4;
+                    canvas.DrawEllipse(Convert.ToSingle(drawable.X)+10, Convert.ToSingle(drawable.Y)-16, 15, 15);
+
+                    //Partie moyen
+                    //Remplissage +Contour -->(x, y, longueur, hauteur)
+                    canvas.FillColor= drawable.Color;
+                    canvas.FillEllipse(Convert.ToSingle(drawable.X)+5, Convert.ToSingle(drawable.Y)-10, 25, 15);
+                    canvas.StrokeColor= Colors.Black;
+                    canvas.StrokeSize= 4;
+                    canvas.DrawEllipse(Convert.ToSingle(drawable.X)+5, Convert.ToSingle(drawable.Y)-10, 25, 15);
+
+                    //Partie gd
+                    //Remplissage +Contour -->(x, y, longueur, hauteur)
+                    canvas.FillColor = drawable.Color;
+                    canvas.FillEllipse(Convert.ToSingle(drawable.X), Convert.ToSingle(drawable.Y), 35, 15);
+                    canvas.StrokeColor = Colors.Black;
+                    canvas.StrokeSize = 4;
+                    canvas.DrawEllipse(Convert.ToSingle(drawable.X), Convert.ToSingle(drawable.Y), 35, 15);
                 }
             }
         }
