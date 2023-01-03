@@ -118,13 +118,26 @@ namespace Ecosysteme
                     if(item is Carnivore)
                     {
                         //Si Rencontre Herbivore OU Viande: Mange +Full Energie-Vie
-                        if(item2 is Herbivore || item2.GetType()==typeof(Viande))
+                        if(item2.GetType()==typeof(Viande))
                         {
-                            if(ZoneContact(item, item2)==true)
+                            if (ZoneContact(item, item2)==true)
                             {
                                 objects.Remove(item2);
+                                item.X= item2.X;
+                                item.Y= item2.Y;
                                 item.Energie= 75;
                                 item.Vie1= 15;
+                            }
+                        }
+                        if(item2 is Herbivore)
+                        {
+                            if (ZoneContact(item, item2)==true)
+                            {
+                                item.X= item2.X;
+                                item.Y= item2.Y;
+                                item2.Energie= 0;
+                                item2.Vie1= 0;
+                                item2.Vie2= 0;
                             }
                         }
                     }
