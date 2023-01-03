@@ -23,21 +23,9 @@
                 BackgroundColor="Black"/>
 
         <HorizontalStackLayout>
-            <!--BOUTTON AJOUANT 1 ANIMAL-->
-            <Button
-                Text="AJOUTER ANIMAL"
-                HorizontalOptions="Center" 
-                BackgroundColor="Red"
-                BorderColor="Black"
-                BorderWidth="5"
-                FontSize="36"
-                FontFamily="Comic Sans MS"
-                TextColor="Black"
-                Clicked="OnButton_AddAnimal"/>
-
             <!--BOUTTON AJOUANT 1 PLANTE-->
             <Button
-                    Text="AJOUTER PLANTE"
+                    Text="+PLANTE"
                     HorizontalOptions="Center" 
                     BackgroundColor="Green"
                     BorderColor="Black"
@@ -46,7 +34,31 @@
                     FontFamily="Comic Sans MS"
                     TextColor="Black"
                     Clicked="OnButton_AddPlante"/>
-          </HorizontalStackLayout>
+
+            <!--BOUTTON AJOUANT 1 ZEBRE-->
+            <Button
+                Text="+ZEBRE"
+                HorizontalOptions="Center" 
+                BackgroundColor="White"
+                BorderColor="Black"
+                BorderWidth="5"
+                FontSize="36"
+                FontFamily="Comic Sans MS"
+                TextColor="Black"
+                Clicked="OnButton_AddZebre"/>
+
+            <!--BOUTTON AJOUANT 1 TIGRE-->
+            <Button
+                Text="+TIGRE"
+                HorizontalOptions="Center" 
+                BackgroundColor="OrangeRed"
+                BorderColor="Black"
+                BorderWidth="5"
+                FontSize="36"
+                FontFamily="Comic Sans MS"
+                TextColor="Black"
+                Clicked="OnButton_AddTigre"/>
+        </HorizontalStackLayout>
 
     </VerticalStackLayout>
     

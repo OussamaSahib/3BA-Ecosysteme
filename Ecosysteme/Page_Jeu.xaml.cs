@@ -25,15 +25,21 @@ public partial class Page_Jeu: ContentPage
         graphics.Invalidate();
     }
 
-    /*FCT BOUTTON AJOUTER ANIMAL*/
-    private void OnButton_AddAnimal(object sender, EventArgs e)
-    {
-        simulation.Add_Animal();
-    }
-
     /*FCT BOUTTON AJOUTER PLANTE*/
     private void OnButton_AddPlante(object sender, EventArgs e)
     {
         simulation.Add_Plante();
-     }
+    }
+
+    /*FCT BOUTTON AJOUTER ZEBRE*/
+    private void OnButton_AddZebre(object sender, EventArgs e)
+    {
+        simulation.Add_Zebre();
+    }
+
+    /*FCT BOUTTON AJOUTER TIGRE*/
+    private void OnButton_AddTigre(object sender, EventArgs e)
+    {
+        simulation.Add_Tigre();
+    }
 }

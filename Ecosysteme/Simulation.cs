@@ -1,5 +1,7 @@
 ﻿//FICHIER REPRENANT SIMULATIONOBJET POUR Y INTEGRER LES ELEMENTS
+using Microsoft.Maui;
 using Microsoft.Maui.Graphics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Ecosysteme
 {
@@ -12,53 +14,62 @@ namespace Ecosysteme
         {
             objects= new List<SimulationObjet>();
 
-            objects.Add(new Animal(900, 350, 75, 15, 15));
+            objects.Add(new Zebre(900, 500, 75, 15, 15));
+            objects.Add(new Tigre(900, 350, 75, 15, 15));
             objects.Add(new Plante(600, 350,75, 15, 15));
         }
 
 
+        //FCTS BOUTTON
         //Position random dans la map
         Random rnd= new Random();
         int min_x= 0;
         int max_x= 1800;
         int min_y= 0;
         int max_y= 700;
-        //FCT QUI AJOUTE 1 ANIMAL (-->AVEC BOUTTON)
-        public void Add_Animal()
-        {
-            objects.Add(new Animal(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
-        }
 
         //FCT QUI AJOUTE 1 PLANTE (-->AVEC BOUTTON)
         public void Add_Plante()
         {
             objects.Add(new Plante(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
         }
+        //FCT QUI AJOUTE 1 ZEBRE (-->AVEC BOUTTON)
+        public void Add_Zebre()
+        {
+            objects.Add(new Zebre(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
+        }
+        //FCT QUI AJOUTE 1 TIGRE (-->AVEC BOUTTON)
+        public void Add_Tigre()
+        {
+            objects.Add(new Tigre(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
+        }
+
+
 
 
 
         //DESSIN DS SIMULATION
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            //AJOUT/SUPPRESSION ELEMENT DE LA LISTE
+            //MODIFICATION ELEMENT DE LA LISTE
             foreach(SimulationObjet item in objects.ToList())
             {
-                //ETRE VIVANT MORT-->VIANDE
-                if(item.GetType()==typeof(Animal)  && item.Vie2==0)
+                //ANIMAL MORT-->VIANDE
+                if(item is Animal && item.Vie2==0)
                 {
                     objects.Add(new Viande(item.X, item.Y, 75));
                     objects.Remove(item);
-                };
+                }
 
-                //VIANDE-->DECHET
-                if((item.GetType()==typeof(Plante) && item.Vie2==0) || (item.GetType()==typeof(Viande) && item.Vie_Viande==0))
+                //PLANTE ET VIANDE MORT-->DECHET
+                if((item is Plante && item.Vie2==0) || (item.GetType()==typeof(Viande) && item.Vie_Viande==0))
                 {
                     objects.Add(new Dechet(item.X, item.Y));
                     objects.Remove(item);
                 }
 
                 //ANIMAL CREE DES DECHETS REGULIERS
-                if(item.GetType()==typeof(Animal))
+                if(item is Animal)
                 {
                     if (item.Energie==75 || item.Energie==50 || item.Energie==25)
                     {
@@ -66,23 +77,50 @@ namespace Ecosysteme
                     }
                 }
 
-                //ZONE DE CONTACT ANIMAL
-                if(item.GetType()==typeof(Animal))
+
+                //FCT ZONE CONTACT ANIMAL
+                bool ZoneContact(SimulationObjet AnimalZone, SimulationObjet ElemExt) 
                 {
                     //Zone de contact défini
-                    double contactDistance = 50 + 20;
-                    double minX= item.X -contactDistance;
-                    double maxX= item.X +contactDistance;
-                    double minY= item.Y -contactDistance;
-                    double maxY= item.Y +contactDistance;
+                    double contactDistance= 50+20;
+                    double minX= AnimalZone.X -contactDistance;
+                    double maxX= AnimalZone.X +contactDistance;
+                    double minY= AnimalZone.Y -contactDistance;
+                    double maxY= AnimalZone.Y +contactDistance;
 
-                    //Element rencontré
-                    foreach(SimulationObjet item2 in objects.ToList())
+                    //Si Element ext. rentre ds la Zone de contact
+                    if (ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
+                    {return true;}
+                    else 
+                    {return false;}
+                }
+
+                //ZONE CONTACT ANIMAL
+                //Element rencontré
+                foreach(SimulationObjet item2 in objects.ToList())
+                {
+                    //ZONE CONTACT HERBIVORE
+                    if(item is Herbivore)
                     {
-                        //Si RENCONTRE PLANTE: Remove plante
-                        if(item2.GetType()==typeof(Plante))
+                        //Si Rencontre Plante: Mange +Full Energie-Vie
+                        if(item2 is Plante)
                         {
-                            if (item2.X>=minX && item2.X<=maxX && item2.Y>=minY && item2.Y<=maxY)
+                            if(ZoneContact(item, item2)==true)
+                            {
+                                objects.Remove(item2);
+                                item.Energie= 75;
+                                item.Vie1= 15;
+                            }
+                        }
+                    }
+
+                    //ZONE CONTACT CARNIVORE
+                    if(item is Carnivore)
+                    {
+                        //Si Rencontre Herbivore OU Viande: Mange +Full Energie-Vie
+                        if(item2 is Herbivore || item2.GetType()==typeof(Viande))
+                        {
+                            if(ZoneContact(item, item2)==true)
                             {
                                 objects.Remove(item2);
                                 item.Energie= 75;
@@ -97,13 +135,13 @@ namespace Ecosysteme
             //DESSIN
             foreach (SimulationObjet drawable in objects)
             {
-                if((drawable.GetType()==typeof(Animal) || drawable.GetType()==typeof(Plante)) && drawable.Vie2!=0) {
+                if((drawable is Animal || drawable is Plante) && drawable.Vie2!=0){
                     //ÊTRE VIVANT
                     canvas.FillColor= drawable.Color;
                     canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
 
-                    //ZONE DE CONTACT
-                    if(drawable.GetType()==typeof(Animal))
+                    //ZONE CONTACT
+                    if(drawable is Animal)
                     {
                         canvas.StrokeColor= Colors.Blue;
                         canvas.StrokeSize= 10;
@@ -169,7 +207,7 @@ namespace Ecosysteme
                 //VIANDE
                 if(drawable.GetType()==typeof(Viande))
                 {
-                    //Viande brun + Os blanc
+                    //Viande brun +Os blanc
                     //1 rectangle brun +2 rectangles blanches -->(x,y, longueur, hauteur)
                     canvas.FillColor= drawable.Color;
                     canvas.FillRectangle(Convert.ToSingle(drawable.X)-37, Convert.ToSingle(drawable.Y), 60, 35);
@@ -211,10 +249,10 @@ namespace Ecosysteme
 
                     //Partie gd
                     //Remplissage +Contour -->(x, y, longueur, hauteur)
-                    canvas.FillColor = drawable.Color;
+                    canvas.FillColor= drawable.Color;
                     canvas.FillEllipse(Convert.ToSingle(drawable.X), Convert.ToSingle(drawable.Y), 35, 15);
-                    canvas.StrokeColor = Colors.Black;
-                    canvas.StrokeSize = 4;
+                    canvas.StrokeColor= Colors.Black;
+                    canvas.StrokeSize= 4;
                     canvas.DrawEllipse(Convert.ToSingle(drawable.X), Convert.ToSingle(drawable.Y), 35, 15);
                 }
             }

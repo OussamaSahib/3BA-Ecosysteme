@@ -5,7 +5,7 @@ namespace Ecosysteme
 {
     public class Animal: EtreVivant
     {
-        public Animal(double x, double y, int energie, int vie1, int vie2): base(Colors.Red, x, y, energie, vie1, vie2){}
+        public Animal(Color color, double x, double y, int energie, int vie1, int vie2): base(color, x, y, energie, vie1, vie2){}
 
         //PAS RANDOM
         public void Move()
