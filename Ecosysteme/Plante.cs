@@ -11,7 +11,7 @@ namespace Ecosysteme
         public void Energie_Vie()
         {   //Energie qui diminue
             if(Energie>0)
-            {Energie= Energie-5;}
+            {Energie= Energie-1;}
             if(Energie<0) 
             {Energie= 0;}
 

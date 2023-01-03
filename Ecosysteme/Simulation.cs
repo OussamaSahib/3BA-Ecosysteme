@@ -40,21 +40,56 @@ namespace Ecosysteme
         //DESSIN DS SIMULATION
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            //AJOUT/SUPPRESSION ETRE VIVANT DE LA LISTE
-            foreach (SimulationObjet item in objects.ToList())
+            //AJOUT/SUPPRESSION ELEMENT DE LA LISTE
+            foreach(SimulationObjet item in objects.ToList())
             {
                 //ETRE VIVANT MORT-->VIANDE
-                if ((item.GetType()==typeof(Animal) || item.GetType()==typeof(Plante)) && item.Vie2==0)
+                if(item.GetType()==typeof(Animal)  && item.Vie2==0)
                 {
                     objects.Add(new Viande(item.X, item.Y, 75));
                     objects.Remove(item);
                 };
 
                 //VIANDE-->DECHET
-                if (item.GetType()==typeof(Viande) && item.Vie_Viande==0)
+                if((item.GetType()==typeof(Plante) && item.Vie2==0) || (item.GetType()==typeof(Viande) && item.Vie_Viande==0))
                 {
                     objects.Add(new Dechet(item.X, item.Y));
                     objects.Remove(item);
+                }
+
+                //ANIMAL CREE DES DECHETS REGULIERS
+                if(item.GetType()==typeof(Animal))
+                {
+                    if (item.Energie==75 || item.Energie==50 || item.Energie==25)
+                    {
+                        objects.Add(new Dechet(item.X, item.Y));
+                    }
+                }
+
+                //ZONE DE CONTACT ANIMAL
+                if(item.GetType()==typeof(Animal))
+                {
+                    //Zone de contact défini
+                    double contactDistance = 50 + 20;
+                    double minX= item.X -contactDistance;
+                    double maxX= item.X +contactDistance;
+                    double minY= item.Y -contactDistance;
+                    double maxY= item.Y +contactDistance;
+
+                    //Element rencontré
+                    foreach(SimulationObjet item2 in objects.ToList())
+                    {
+                        //Si RENCONTRE PLANTE: Remove plante
+                        if(item2.GetType()==typeof(Plante))
+                        {
+                            if (item2.X>=minX && item2.X<=maxX && item2.Y>=minY && item2.Y<=maxY)
+                            {
+                                objects.Remove(item2);
+                                item.Energie= 75;
+                                item.Vie1= 15;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -62,11 +97,18 @@ namespace Ecosysteme
             //DESSIN
             foreach (SimulationObjet drawable in objects)
             {
-                if ((drawable.GetType()==typeof(Animal) || drawable.GetType()==typeof(Plante)) && drawable.Vie2!=0) { 
+                if((drawable.GetType()==typeof(Animal) || drawable.GetType()==typeof(Plante)) && drawable.Vie2!=0) {
                     //ÊTRE VIVANT
                     canvas.FillColor= drawable.Color;
                     canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
 
+                    //ZONE DE CONTACT
+                    if(drawable.GetType()==typeof(Animal))
+                    {
+                        canvas.StrokeColor= Colors.Blue;
+                        canvas.StrokeSize= 10;
+                        canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
+                    }
 
                     //BARRE D'ENERGIE
                     //Barre grise
@@ -100,7 +142,7 @@ namespace Ecosysteme
                         canvas.FillArc(Convert.ToSingle(drawable.X)-posx, Convert.ToSingle(drawable.Y)-65+15, vie, vie, 0, 180, false);
                         canvas.FillArc(Convert.ToSingle(drawable.X)-posx+15, Convert.ToSingle(drawable.Y)-65+15, vie, vie, 0, 180, false);
                         //Triangle -->sens horloger(pt à pt)
-                        if (vie!=0)
+                        if(vie!=0)
                         {
                             PathF path= new PathF();
                             path.MoveTo(Convert.ToSingle(drawable.X)-posx, Convert.ToSingle(drawable.Y)-65+15+Convert.ToSingle(7.5));
@@ -108,7 +150,7 @@ namespace Ecosysteme
                             path.LineTo(Convert.ToSingle(drawable.X)-posx+30, Convert.ToSingle(drawable.Y)-65+15+Convert.ToSingle(7.5));
                             canvas.FillPath(path);
                         }
-                        else { }
+                        else{}
                     }
                     //COEUR DE VIE 1
                     //Coeur gris
@@ -125,7 +167,7 @@ namespace Ecosysteme
 
 
                 //VIANDE
-                if (drawable.GetType()==typeof(Viande))
+                if(drawable.GetType()==typeof(Viande))
                 {
                     //Viande brun + Os blanc
                     //1 rectangle brun +2 rectangles blanches -->(x,y, longueur, hauteur)
@@ -149,7 +191,7 @@ namespace Ecosysteme
 
 
                 //DECHET
-                if (drawable.GetType()==typeof(Dechet))
+                if(drawable.GetType()==typeof(Dechet))
                 {
                     //Partie petit
                     //Remplissage +Contour -->(x, y, longueur, hauteur)
@@ -182,13 +224,17 @@ namespace Ecosysteme
         //UPDATE
         public void Update()
         {
-            foreach (SimulationObjet drawable in objects)
+            foreach(SimulationObjet drawable in objects)
             {
                 drawable.Update();
             }
-            foreach (SimulationObjet item in objects)
+            foreach(SimulationObjet item in objects)
             {
                 item.Update();
+            }
+            foreach(SimulationObjet item2 in objects)
+            {
+                item2.Update();
             }
         }
     }

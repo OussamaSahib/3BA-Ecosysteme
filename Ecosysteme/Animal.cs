@@ -22,25 +22,25 @@ namespace Ecosysteme
             int randomX= numbersX[randIndexX];
             int randIndexY= rnd.Next(numbersY.Count);
             int randomY= numbersY[randIndexY];
-                
+
             X= X +randomX;
             Y= Y +randomY;
         }
-        
+
 
 
         //ENERGIE+VIE QUI DIMINUE
         public void Energie_Vie()
         {   //Energie qui diminue
             if(Energie>0)
-            {Energie= Energie-5;}
-            if(Energie<0) 
+            {Energie= Energie-1;}
+            if(Energie<0)
             {Energie= 0;}
 
             //Vie qui diminue
             if(Energie==0 && Vie1!=0 && Vie2!=0)
             {Vie1= 0;
-            Energie= 75;}
+             Energie= 75;}
 
             if(Energie==0 && Vie1==0 && Vie2!=0)
             {Vie2= 0;
@@ -55,7 +55,6 @@ namespace Ecosysteme
 
             //ENERGIE+VIE QUI DIMINUE
             Energie_Vie();
-
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Ecosysteme
         public void VieViande()
         {   //Vie_Viande qui diminue
             if (Vie_Viande>0)
-                Vie_Viande= Vie_Viande-5;
+                Vie_Viande= Vie_Viande-1;
             else
                 Vie_Viande= 0;
         }
