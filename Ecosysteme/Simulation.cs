@@ -57,15 +57,15 @@ namespace Ecosysteme
                 //ANIMAL MORT-->VIANDE
                 if(item is Animal && item.Vie2==0)
                 {
-                    objects.Add(new Viande(item.X, item.Y, 75));
                     objects.Remove(item);
+                    objects.Add(new Viande(item.X, item.Y, 75));    
                 }
 
                 //PLANTE ET VIANDE MORT-->DECHET
                 if((item is Plante && item.Vie2==0) || (item.GetType()==typeof(Viande) && item.Vie_Viande==0))
                 {
-                    objects.Add(new Dechet(item.X, item.Y));
                     objects.Remove(item);
+                    objects.Add(new Dechet(item.X, item.Y));
                 }
 
                 //ANIMAL CREE DES DECHETS REGULIERS
@@ -89,7 +89,7 @@ namespace Ecosysteme
                     double maxY= AnimalZone.Y +contactDistance;
 
                     //Si Element ext. rentre ds la Zone de contact
-                    if (ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
+                    if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
                     {return true;}
                     else 
                     {return false;}
@@ -102,14 +102,16 @@ namespace Ecosysteme
                     //ZONE CONTACT HERBIVORE
                     if(item is Herbivore)
                     {
-                        //Si Rencontre Plante: Mange +Full Energie-Vie
+                        //Si Rencontre Plante: Manger +Full Energie-Vie
                         if(item2 is Plante)
                         {
                             if(ZoneContact(item, item2)==true)
-                            {
-                                objects.Remove(item2);
+                            {                               
+                                item.X= item2.X;
+                                item.Y= item2.Y;
                                 item.Energie= 75;
                                 item.Vie1= 15;
+                                objects.Remove(item2);
                             }
                         }
                     }
@@ -117,24 +119,27 @@ namespace Ecosysteme
                     //ZONE CONTACT CARNIVORE
                     if(item is Carnivore)
                     {
-                        //Si Rencontre Herbivore OU Viande: Mange +Full Energie-Vie
-                        if(item2.GetType()==typeof(Viande))
+                        //Si Rencontre Herbivore OU Viande: Manger +Full Energie-Vie
+                        if(item2.GetType()==typeof(Viande) && item.Vie2>0)
                         {
-                            if (ZoneContact(item, item2)==true)
+                            if(ZoneContact(item, item2)==true)
                             {
-                                objects.Remove(item2);
                                 item.X= item2.X;
                                 item.Y= item2.Y;
                                 item.Energie= 75;
                                 item.Vie1= 15;
+                                objects.Remove(item2);
                             }
                         }
+                        //Si Rencontre Herbivore: Tuer 
                         if(item2 is Herbivore)
                         {
                             if (ZoneContact(item, item2)==true)
                             {
                                 item.X= item2.X;
                                 item.Y= item2.Y;
+                                item.Energie= 75;
+                                item.Vie1= 15;
                                 item2.Energie= 0;
                                 item2.Vie1= 0;
                                 item2.Vie2= 0;
@@ -218,7 +223,7 @@ namespace Ecosysteme
 
 
                 //VIANDE
-                if(drawable.GetType()==typeof(Viande))
+                if(drawable.GetType()==typeof(Viande) && drawable.Vie_Viande!=0)
                 {
                     //Viande brun +Os blanc
                     //1 rectangle brun +2 rectangles blanches -->(x,y, longueur, hauteur)

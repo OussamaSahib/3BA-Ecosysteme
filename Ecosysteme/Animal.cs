@@ -10,7 +10,7 @@ namespace Ecosysteme
         //PAS RANDOM
         public void Move()
         {   //Nb de pas
-            int pas= 30;
+            int pas= 20;
             //Pour X: Rien, Gauche, Droite
             List<int>numbersX= new List<int>() {0, -pas, pas};
             //Pour X: Rien, Bas, Haut

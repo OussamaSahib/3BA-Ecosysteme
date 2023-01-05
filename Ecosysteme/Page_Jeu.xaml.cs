@@ -13,8 +13,8 @@ public partial class Page_Jeu: ContentPage
 
         //Execute Fct Timer c-dessous
         timer= Dispatcher.CreateTimer();
-        timer.Interval= TimeSpan.FromMilliseconds(500);
-        timer.Tick += this.OnTimeEvent;
+        timer.Interval= TimeSpan.FromMilliseconds(600);
+        timer.Tick+= this.OnTimeEvent;
         timer.Start();
     }
 
