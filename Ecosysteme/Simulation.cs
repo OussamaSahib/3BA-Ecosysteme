@@ -145,6 +145,42 @@ namespace Ecosysteme
                         }
                     }
                 }
+
+                //FCT ZONE RACINE PLANTE
+                bool ZoneRacine(SimulationObjet PlanteZone, SimulationObjet ElemExt) 
+                {
+                    //Zone de contact défini
+                    double contactDistance= 50+20;
+                    double minX= PlanteZone.X -contactDistance;
+                    double maxX= PlanteZone.X +contactDistance;
+                    double minY= PlanteZone.Y -contactDistance;
+                    double maxY= PlanteZone.Y +contactDistance;
+
+                    //Si Element ext. rentre ds la Zone de contact
+                    if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
+                    {return true;}
+                    else 
+                    {return false;}
+                }
+
+                //ZONE RACINE PLANTE
+                //Element rencontré
+                foreach(SimulationObjet item2 in objects.ToList())
+                {
+                    if(item is Plante)
+                    {
+                        //Si Rencontre Decehet: Manger +Full Energie-Vie
+                        if(item2 is Dechet && item.Vie2>0)
+                        {
+                            if(ZoneRacine(item, item2)==true)
+                            {                               
+                                item.Energie= 75;
+                                item.Vie1= 15;
+                                objects.Remove(item2);
+                            }
+                        }
+                    }
+                }
             }
 
 
@@ -157,10 +193,22 @@ namespace Ecosysteme
                     canvas.FillColor= drawable.Color;
                     canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
 
-                    //ZONE CONTACT
+                    if(drawable is Tigre)
+                    {
+                    }
+
+                    //ZONE CONTACT ANIMAL
                     if(drawable is Animal)
                     {
                         canvas.StrokeColor= Colors.Purple;
+                        canvas.StrokeSize= 10;
+                        canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
+                    }
+
+                    //ZONE RACINE PLANTE
+                    if(drawable is Plante)
+                    {
+                        canvas.StrokeColor= Colors.DarkRed;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
                     }
