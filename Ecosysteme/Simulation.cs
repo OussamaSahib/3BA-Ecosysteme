@@ -138,8 +138,6 @@ namespace Ecosysteme
                             {
                                 item.X= item2.X;
                                 item.Y= item2.Y;
-                                item.Energie= 75;
-                                item.Vie1= 15;
                                 item2.Energie= 0;
                                 item2.Vie1= 0;
                                 item2.Vie2= 0;
@@ -153,7 +151,8 @@ namespace Ecosysteme
             //DESSIN
             foreach (SimulationObjet drawable in objects)
             {
-                if((drawable is Animal || drawable is Plante) && drawable.Vie2!=0){
+                if((drawable is Animal || drawable is Plante) && drawable.Vie2!=0)
+                {
                     //ÊTRE VIVANT
                     canvas.FillColor= drawable.Color;
                     canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
@@ -161,7 +160,7 @@ namespace Ecosysteme
                     //ZONE CONTACT
                     if(drawable is Animal)
                     {
-                        canvas.StrokeColor= Colors.Blue;
+                        canvas.StrokeColor= Colors.Purple;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
                     }
@@ -219,7 +218,31 @@ namespace Ecosysteme
                     CoeurGris(35);
                     //Coeur de vie
                     CoeurRouge(35, drawable.Vie2);
-            }
+                }
+
+                //GENRE ANIMAL
+                if(drawable is Animal animal)
+                {
+                    //MALE
+                    if(animal.Genre=="male")
+                    {
+                        canvas.StrokeColor= Colors.Blue;
+                        canvas.StrokeSize= 5;
+                        canvas.DrawEllipse(Convert.ToSingle(drawable.X)-68, Convert.ToSingle(drawable.Y)-73, 20, 20);
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-70, Convert.ToSingle(drawable.X)-50+10, Convert.ToSingle(drawable.Y)-70-10);
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)-50+10, Convert.ToSingle(drawable.Y)-70-10, Convert.ToSingle(drawable.X)-50+8-10, Convert.ToSingle(drawable.Y)-70-10);
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)-50+10, Convert.ToSingle(drawable.Y)-70-10-Convert.ToSingle(2.5), Convert.ToSingle(drawable.X)-50+10, Convert.ToSingle(drawable.Y)-70-10+12);
+                    }
+                    //FEMELLE
+                    if(animal.Genre=="femelle")
+                    { 
+                        canvas.StrokeColor= Colors.HotPink;
+                        canvas.StrokeSize= 5;
+                        canvas.DrawEllipse(Convert.ToSingle(drawable.X)-63, Convert.ToSingle(drawable.Y)-78, 20, 20);
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)-Convert.ToSingle(53.5), Convert.ToSingle(drawable.Y)-60, Convert.ToSingle(drawable.X)-Convert.ToSingle(53.5), Convert.ToSingle(drawable.Y)-60+17);
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)-62, Convert.ToSingle(drawable.Y)-50, Convert.ToSingle(drawable.X)-62+17, Convert.ToSingle(drawable.Y)-50);
+                    }
+                }
 
 
                 //VIANDE

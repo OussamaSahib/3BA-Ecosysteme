@@ -5,7 +5,19 @@ namespace Ecosysteme
 {
     public class Animal: EtreVivant
     {
-        public Animal(Color color, double x, double y, int energie, int vie1, int vie2): base(color, x, y, energie, vie1, vie2){}
+        public string Genre{get; set;}= "inconnu";
+        public Animal(Color color, double x, double y, int energie, int vie1, int vie2, string genre= "inconnu"): base(color, x, y, energie, vie1, vie2)
+        {
+            if (genre=="inconnu")
+            {
+                List<string> genres= new List<string>() {"male","femelle"};
+                Random rnd= new Random();
+                int randIndex= rnd.Next(genres.Count);
+                Genre= genres[randIndex];
+            }
+            else
+            {Genre= genre;}
+        }
 
         //PAS RANDOM
         public void Move()
