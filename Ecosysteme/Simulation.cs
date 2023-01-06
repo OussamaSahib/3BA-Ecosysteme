@@ -1,6 +1,8 @@
 ﻿//FICHIER REPRENANT SIMULATIONOBJET POUR Y INTEGRER LES ELEMENTS
 using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Graphics.Text;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Ecosysteme
@@ -15,7 +17,8 @@ namespace Ecosysteme
             objects= new List<SimulationObjet>();
 
             objects.Add(new Zebre(900, 500, 75, 15, 15));
-            objects.Add(new Tigre(900, 350, 75, 15, 15));
+            objects.Add(new Zebre(940, 500, 75, 15, 15));
+            //objects.Add(new Tigre(900, 350, 75, 15, 15));
             objects.Add(new Plante(600, 350,75, 15, 15));
         }
 
@@ -61,7 +64,7 @@ namespace Ecosysteme
                     objects.Add(new Viande(item.X, item.Y, 75));    
                 }
 
-                //PLANTE ET VIANDE MORT-->DECHET
+                //PLANTE MORT ET VIANDE MORT-->DECHET
                 if((item is Plante && item.Vie2==0) || (item.GetType()==typeof(Viande) && item.Vie_Viande==0))
                 {
                     objects.Remove(item);
@@ -71,36 +74,69 @@ namespace Ecosysteme
                 //ANIMAL CREE DES DECHETS REGULIERS
                 if(item is Animal)
                 {
-                    if (item.Energie==75 || item.Energie==50 || item.Energie==25)
-                    {
-                        objects.Add(new Dechet(item.X, item.Y));
-                    }
+                    if(item.Energie==75)
+                    {objects.Add(new Dechet(item.X, item.Y));}
                 }
 
 
-                //FCT ZONE CONTACT ANIMAL
-                bool ZoneContact(SimulationObjet AnimalZone, SimulationObjet ElemExt) 
-                {
-                    //Zone de contact défini
-                    double contactDistance= 50+20;
-                    double minX= AnimalZone.X -contactDistance;
-                    double maxX= AnimalZone.X +contactDistance;
-                    double minY= AnimalZone.Y -contactDistance;
-                    double maxY= AnimalZone.Y +contactDistance;
-
-                    //Si Element ext. rentre ds la Zone de contact
-                    if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
-                    {return true;}
-                    else 
-                    {return false;}
-                }
 
                 //ZONE CONTACT ANIMAL
                 //Element rencontré
                 foreach(SimulationObjet item2 in objects.ToList())
                 {
+                    //FCT ZONE CONTACT ANIMAL
+                    bool ZoneContact(SimulationObjet AnimalZone, SimulationObjet ElemExt) 
+                    {
+                        //Zone Contact défini
+                        double contactDistance= 50+20;
+                        double minX= AnimalZone.X -contactDistance;
+                        double maxX= AnimalZone.X +contactDistance;
+                        double minY= AnimalZone.Y -contactDistance;
+                        double maxY= AnimalZone.Y +contactDistance;
+
+                        //Si Element ext. rentre ds la Zone Contact
+                        if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
+                        {return true;}
+                        else 
+                        {return false;}
+                    }
+
+                    //FCT NAISSANCE
+                    void Naissance(SimulationObjet item, SimulationObjet item2)
+                    {
+                        if(item is Animal Animal && item2 is Animal Animal2)
+                        { 
+                            if((Animal.Genre=="male" && Animal2.Genre=="femelle") && (!Animal.isChild && !Animal2.isChild))
+                            {
+                                if(ZoneContact(item, item2)==true)
+                                {
+                                    if(!Animal2.isPregnant && Animal2.Genre=="femelle" && Animal2.repos==0)
+                                    {Animal2.isPregnant= true;}
+                                }
+                            }
+
+                            if(Animal2.isPregnant && Animal2.Genre=="femelle" && !Animal2.isChild)
+                            {
+                                Animal2.gestationCompteur++;
+                                if (Animal2.gestationCompteur>=Animal2.gestation)
+                                { 
+                                    Animal2.isPregnant= false;
+                                    Animal2.gestationCompteur= 0;
+                                    Animal2.repos= 30;
+
+                                    if(Animal is Zebre && Animal2 is Zebre)
+                                    {objects.Add(new Zebre(Animal2.X+50, Animal2.Y, 75, 15, 15));}
+
+                                    if(Animal is Tigre && Animal2 is Tigre)
+                                    {objects.Add(new Tigre(Animal2.X+50, Animal2.Y, 75, 15, 15));}
+                                }
+                            }
+                        }
+                    }
+
+
                     //ZONE CONTACT HERBIVORE
-                    if(item is Herbivore)
+                    if (item is Herbivore)
                     {
                         //Si Rencontre Plante: Manger +Full Energie-Vie
                         if(item2 is Plante)
@@ -114,12 +150,19 @@ namespace Ecosysteme
                                 objects.Remove(item2);
                             }
                         }
+
+                        //Si Rencontre Herbivore
+                        if(item2 is Herbivore)
+                            //Si mm Espece: Reproduction
+                            if(item is Zebre && item2 is Zebre)
+                            {Naissance(item, item2);}
                     }
+
 
                     //ZONE CONTACT CARNIVORE
                     if(item is Carnivore)
                     {
-                        //Si Rencontre Herbivore OU Viande: Manger +Full Energie-Vie
+                        //Si Rencontre Viande: Manger +Full Energie-Vie
                         if(item2.GetType()==typeof(Viande) && item.Vie2>0)
                         {
                             if(ZoneContact(item, item2)==true)
@@ -134,7 +177,7 @@ namespace Ecosysteme
                         //Si Rencontre Herbivore: Tuer 
                         if(item2 is Herbivore)
                         {
-                            if (ZoneContact(item, item2)==true)
+                            if(ZoneContact(item, item2)==true)
                             {
                                 item.X= item2.X;
                                 item.Y= item2.Y;
@@ -143,33 +186,52 @@ namespace Ecosysteme
                                 item2.Vie2= 0;
                             }
                         }
+                        //Si Rencontre Carnivore
+                        if(item2 is Carnivore)
+                        {
+                            //Si mm Espece: Reproduction
+                            if(item is Tigre && item2 is Tigre)
+                            {Naissance(item, item2);}
+
+                            //Sinon: Tuer
+                            else
+                            {                                
+                                item.X= item2.X;
+                                item.Y= item2.Y;
+                                item2.Energie= 0;
+                                item2.Vie1= 0;
+                                item2.Vie2= 0; 
+                            }
+                        }
                     }
                 }
 
-                //FCT ZONE RACINE PLANTE
-                bool ZoneRacine(SimulationObjet PlanteZone, SimulationObjet ElemExt) 
-                {
-                    //Zone de contact défini
-                    double contactDistance= 50+20;
-                    double minX= PlanteZone.X -contactDistance;
-                    double maxX= PlanteZone.X +contactDistance;
-                    double minY= PlanteZone.Y -contactDistance;
-                    double maxY= PlanteZone.Y +contactDistance;
 
-                    //Si Element ext. rentre ds la Zone de contact
-                    if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
-                    {return true;}
-                    else 
-                    {return false;}
-                }
-
-                //ZONE RACINE PLANTE
+                //ZONE CONTACT PLANTE
                 //Element rencontré
                 foreach(SimulationObjet item2 in objects.ToList())
                 {
+                    //FCT ZONE RACINE PLANTE
+                    bool ZoneRacine(SimulationObjet PlanteZone, SimulationObjet ElemExt) 
+                    {
+                        //Zone Racine défini
+                        double contactDistance= 50+20;
+                        double minX= PlanteZone.X -contactDistance;
+                        double maxX= PlanteZone.X +contactDistance;
+                        double minY= PlanteZone.Y -contactDistance;
+                        double maxY= PlanteZone.Y +contactDistance;
+
+                        //Si Element ext. rentre ds la Zone Racine
+                        if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
+                        {return true;}
+                        else 
+                        {return false;}
+                    }
+
+                    //ZONE RACINE PLANTE
                     if(item is Plante)
                     {
-                        //Si Rencontre Decehet: Manger +Full Energie-Vie
+                        //Si Rencontre Dechet: Manger +Full Energie-Vie
                         if(item2 is Dechet && item.Vie2>0)
                         {
                             if(ZoneRacine(item, item2)==true)
@@ -190,28 +252,44 @@ namespace Ecosysteme
                 if((drawable is Animal || drawable is Plante) && drawable.Vie2!=0)
                 {
                     //ÊTRE VIVANT
-                    canvas.FillColor= drawable.Color;
-                    canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
-
-                    if(drawable is Tigre)
+                    //ANIMAL
+                    if(drawable is Animal animal)
                     {
-                    }
+                        //FORME ANIMAL
+                        //Si Enfant
+                        if(animal.isChild)
+                        {canvas.FillColor= drawable.Color;
+                         canvas.FillCircle(new Point(drawable.X, drawable.Y), 13.0);}
 
-                    //ZONE CONTACT ANIMAL
-                    if(drawable is Animal)
-                    {
+                        //Si Adulte
+                        if (!animal.isChild)
+                        {canvas.FillColor= drawable.Color;
+                         canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);}
+
+                        //ZONE CONTACT ANIMAL
                         canvas.StrokeColor= Colors.Purple;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
+
                     }
 
-                    //ZONE RACINE PLANTE
+
+                    //PLANTE
                     if(drawable is Plante)
                     {
+                        //FORME PLANTE
+                        canvas.FillColor= drawable.Color;
+                        canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);
+
+                        //ZONE RACINE PLANTE
                         canvas.StrokeColor= Colors.DarkRed;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
                     }
+
+
+
+
 
                     //BARRE D'ENERGIE
                     //Barre grise
@@ -268,12 +346,14 @@ namespace Ecosysteme
                     CoeurRouge(35, drawable.Vie2);
                 }
 
+
                 //GENRE ANIMAL
-                if(drawable is Animal animal)
+                if(drawable is Animal animaal)
                 {
                     //MALE
-                    if(animal.Genre=="male")
+                    if(animaal.Genre=="male")
                     {
+                        //Symbole Male                       
                         canvas.StrokeColor= Colors.Blue;
                         canvas.StrokeSize= 5;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-68, Convert.ToSingle(drawable.Y)-73, 20, 20);
@@ -282,13 +362,30 @@ namespace Ecosysteme
                         canvas.DrawLine(Convert.ToSingle(drawable.X)-50+10, Convert.ToSingle(drawable.Y)-70-10-Convert.ToSingle(2.5), Convert.ToSingle(drawable.X)-50+10, Convert.ToSingle(drawable.Y)-70-10+12);
                     }
                     //FEMELLE
-                    if(animal.Genre=="femelle")
-                    { 
+                    if(animaal.Genre=="femelle")
+                    {
+                        //Symbole Femelle
                         canvas.StrokeColor= Colors.HotPink;
                         canvas.StrokeSize= 5;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-63, Convert.ToSingle(drawable.Y)-78, 20, 20);
                         canvas.DrawLine(Convert.ToSingle(drawable.X)-Convert.ToSingle(53.5), Convert.ToSingle(drawable.Y)-60, Convert.ToSingle(drawable.X)-Convert.ToSingle(53.5), Convert.ToSingle(drawable.Y)-60+17);
                         canvas.DrawLine(Convert.ToSingle(drawable.X)-62, Convert.ToSingle(drawable.Y)-50, Convert.ToSingle(drawable.X)-62+17, Convert.ToSingle(drawable.Y)-50);
+                    }
+
+                    //Si Animal Enceinte: Oeuf dans corps
+                    if(animaal.isPregnant == true)
+                    {
+                        canvas.FillColor = Colors.DarkCyan;
+                        canvas.FillCircle(Convert.ToSingle(drawable.X), Convert.ToSingle(drawable.Y), 10);
+                    }
+
+                    //Si Animal en Repos: Croix dans corps
+                    if(animaal.repos>0)
+                    {
+                        canvas.StrokeColor= Colors.DarkCyan;
+                        canvas.StrokeSize= 5;
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)-18,Convert.ToSingle(drawable.Y)-18, Convert.ToSingle(drawable.X)+18, Convert.ToSingle(drawable.Y)+18);
+                        canvas.DrawLine(Convert.ToSingle(drawable.X)+18,Convert.ToSingle(drawable.Y)-18, Convert.ToSingle(drawable.X)-18, Convert.ToSingle(drawable.Y)+18);
                     }
                 }
 
