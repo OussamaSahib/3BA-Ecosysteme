@@ -8,13 +8,13 @@ namespace Ecosysteme
     {
         //VARIABLES UTILISEES DS SIMULTATION
         //DECHET
-        public int DechetCompteur{get;set;}
+        public int DechetCompteur{get;set;}=0;
         public int DechetSeuilCompteur{get;set;}= 30;
         //GENRE
         public string Genre{get;set;}= "inconnu";
         //ENCEINTE
         public int gestationCompteur{get;set;}= 0;
-        public int gestation{get;set;}= 50;
+        public int gestationSeuilCompteur{get;set;}= 50;
         public bool isPregnant{get;set;}= false;
         //REPOS ENCEINTE
         public int repos{get;set;}= 0;

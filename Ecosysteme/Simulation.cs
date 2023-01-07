@@ -76,7 +76,7 @@ namespace Ecosysteme
                 if(item is Animal animal && animal.DechetCompteur>=animal.DechetSeuilCompteur)
                 {
                     {objects.Add(new Dechet(item.X, item.Y));
-                    animal.DechetCompteur = 0;}
+                    animal.DechetCompteur= 0;}
                 }
 
 
@@ -102,6 +102,23 @@ namespace Ecosysteme
                         {return false;}
                     }
 
+                    //FCT ZONE VISION ANIMAL
+                    bool ZoneVision(SimulationObjet AnimalZone, SimulationObjet ElemExt)
+                    {
+                        //Zone Vision défini
+                        double visionDistance= 250+20;
+                        double minX= AnimalZone.X -visionDistance;
+                        double maxX= AnimalZone.X +visionDistance;
+                        double minY= AnimalZone.Y -visionDistance;
+                        double maxY= AnimalZone.Y +visionDistance;
+
+                        //Si Element ext. rentre ds la Zone Vision
+                        if (ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
+                        {return true;}
+                        else
+                        {return false;}
+                    }
+
                     //FCT NAISSANCE
                     void Naissance(SimulationObjet item, SimulationObjet item2)
                     {
@@ -119,7 +136,7 @@ namespace Ecosysteme
                             if(Animal2.isPregnant && Animal2.Genre=="femelle" && !Animal2.isChild)
                             {
                                 Animal2.gestationCompteur++;
-                                if (Animal2.gestationCompteur>=Animal2.gestation)
+                                if (Animal2.gestationCompteur>=Animal2.gestationSeuilCompteur)
                                 { 
                                     Animal2.isPregnant= false;
                                     Animal2.gestationCompteur= 0;
@@ -137,75 +154,123 @@ namespace Ecosysteme
 
 
                     //ZONE CONTACT HERBIVORE
-                    if (item is Herbivore)
+                    if(item is Herbivore)
                     {
-                        //Si Rencontre Plante: Manger +Full Energie-Vie
+                        //RENCONTRE PLANTE
                         if(item2 is Plante)
                         {
-                            if(ZoneContact(item, item2)==true)
-                            {                               
-                                item.X= item2.X;
-                                item.Y= item2.Y;
-                                item.Energie= 75;
-                                item.Vie1= 15;
-                                objects.Remove(item2);
+                            //Si Vision: Herbivore se rapproche de Plante
+                            if (ZoneVision(item, item2)==true)
+                            {
+                                double distanceX= item.X -item2.X;
+                                double distanceY= item.Y -item2.Y;
+                                item.X= item.X -(distanceX*0.2);
+                                item.Y= item.Y -(distanceY*0.2);
+
+                                //Si Contact: Manger +Full Energie-Vie
+                                if(ZoneContact(item, item2)==true)
+                                {
+                                    item.X= item2.X;
+                                    item.Y= item2.Y;
+                                    item.Energie= 75;
+                                    item.Vie1= 15;
+                                    objects.Remove(item2);
+                                }
                             }
                         }
 
-                        //Si Rencontre Herbivore
+                        //RENCONTRE HERBIVORE
                         if(item2 is Herbivore)
                             //Si mm Espece: Reproduction
                             if(item is Zebre && item2 is Zebre)
                             {Naissance(item, item2);}
                     }
+                    
 
 
                     //ZONE CONTACT CARNIVORE
                     if(item is Carnivore)
                     {
-                        //Si Rencontre Viande: Manger +Full Energie-Vie
+                        //RENCONTRE VIANDE
                         if(item2.GetType()==typeof(Viande) && item.Vie2>0)
                         {
-                            if(ZoneContact(item, item2)==true)
+                            //Si Vision: Carnivore se rapproche de Viande
+                            if(ZoneVision(item, item2)==true)
                             {
-                                item.X= item2.X;
-                                item.Y= item2.Y;
-                                item.Energie= 75;
-                                item.Vie1= 15;
-                                objects.Remove(item2);
+                                double distanceX= item.X -item2.X;
+                                double distanceY= item.Y -item2.Y;
+                                item.X= item.X -(distanceX*0.1);
+                                item.Y= item.Y -(distanceY*0.1);
+
+                                //Si Contact: Manger +Full Energie-Vie
+                                if(ZoneContact(item, item2)==true)
+                                {
+                                    item.X= item2.X;
+                                    item.Y= item2.Y;
+                                    item.Energie= 75;
+                                    item.Vie1= 15;
+                                    objects.Remove(item2);
+                                }
                             }
                         }
-                        //Si Rencontre Herbivore: Tuer 
+                        
+                        //RENCONTRE HERBIVORE 
                         if(item2 is Herbivore)
                         {
-                            if(ZoneContact(item, item2)==true)
+                            //Si Vision: Carnivore se rapproche de Herbivore
+                            if(ZoneVision(item, item2)==true)
                             {
-                                item.X= item2.X;
-                                item.Y= item2.Y;
-                                item2.Energie= 0;
-                                item2.Vie1= 0;
-                                item2.Vie2= 0;
+                                double distanceX= item.X -item2.X;
+                                double distanceY= item.Y -item2.Y;
+                                item.X= item.X -(distanceX*0.2);
+                                item.Y= item.Y -(distanceY*0.2);
+
+                                //Si Contact: Tuer 
+                                if(ZoneContact(item, item2)==true)
+                                {
+                                    item.X= item2.X;
+                                    item.Y= item2.Y;
+                                    item2.Energie= 0;
+                                    item2.Vie1= 0;
+                                    item2.Vie2= 0;
+                                }
                             }
                         }
-                        //Si Rencontre Carnivore
+
+                        //RENCONTRE CARNIVORE
                         if(item2 is Carnivore)
                         {
                             //Si mm Espece: Reproduction
                             if(item is Tigre && item2 is Tigre)
                             {Naissance(item, item2);}
 
-                            //Sinon: Tuer
+                            //Si pas mm Espece
                             else
                             {                                
-                                item.X= item2.X;
-                                item.Y= item2.Y;
-                                item2.Energie= 0;
-                                item2.Vie1= 0;
-                                item2.Vie2= 0; 
+                                //Si Vision: Carnivore se rapproche de Carnivore
+                                if(ZoneVision(item, item2)==true)
+                                {
+                                    double distanceX= item.X -item2.X;
+                                    double distanceY= item.Y -item2.Y;
+                                    item.X= item.X -(distanceX*0.2);
+                                    item.Y= item.Y -(distanceY*0.2);
+
+                                    //Si Contact: Tuer 
+                                    if(ZoneContact(item, item2)==true)
+                                    {
+                                        item.X= item2.X;
+                                        item.Y= item2.Y;
+                                        item2.Energie= 0;
+                                        item2.Vie1= 0;
+                                        item2.Vie2= 0;
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
+
 
 
                 //ZONES PLANTE
@@ -262,7 +327,7 @@ namespace Ecosysteme
                         int index= random.Next(positions.Count);
                         var position= positions[index];
 
-                        //Naissance de 1 nouvelle plante (Compteur remis à zero)
+                        //Naissance de 1 nouvelle plante (+Compteur remis à zero)
                         objects.Add(new Plante(position.Item1, position.Item2, 75, 15, 15));
                         Plante.NaissanceCompteur= 0;
                     }
@@ -296,6 +361,11 @@ namespace Ecosysteme
                         canvas.StrokeColor= Colors.Purple;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
+                        
+                        //ZONE VISION ANIMAL
+                        canvas.StrokeColor= Colors.Yellow;
+                        canvas.StrokeSize= 4;
+                        canvas.DrawEllipse(Convert.ToSingle(drawable.X)-125, Convert.ToSingle(drawable.Y)-125, 250, 250);
                     }
 
 
