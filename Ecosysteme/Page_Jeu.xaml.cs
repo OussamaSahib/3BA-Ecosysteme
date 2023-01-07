@@ -26,9 +26,9 @@ public partial class Page_Jeu: ContentPage
     }
 
     /*FCT BOUTTON AJOUTER PLANTE*/
-    private void OnButton_AddPlante(object sender, EventArgs e)
+    private void OnButton_AddBuisson(object sender, EventArgs e)
     {
-        simulation.Add_Plante();
+        simulation.Add_Buisson();
     }
 
     /*FCT BOUTTON AJOUTER ZEBRE*/

@@ -22,6 +22,15 @@ namespace Ecosysteme
             objects.Add(new Tigre(1400, 350, 75, 15, 15));
             objects.Add(new Buisson(400, 500,75, 15, 15));
             objects.Add(new Buisson(1300, 200, 75, 15, 15));
+
+            //SI AJOUT DE NOUVELLES ESPECES:
+            //0)Créer la Classe de la nouvelle espèce +Créer Animal ici
+            //1)Si Herbivore:
+            //Copier lignes du Zèbre, mais avec le nouvel animal voulu: Lignes 155-156(=FCT NAISSANCE); 195-196(=RENCONTRE MM ESPECE)
+            //2)Si Carnivore:
+            //Copier lignes du Lion, mais avec le nouvel animal voulu: Lignes 158-159(=FCT NAISSANCE); 255-256(=RENCONTRE MM ESPECE)
+            //3)Si Plante:
+            //Copier lignes du Buisson, mais avec la nouvelle plante voulu: Lignes 342-346(=ZONE SEMIS)
         }
 
 
@@ -34,7 +43,7 @@ namespace Ecosysteme
         int max_y= 700;
 
         //FCT QUI AJOUTE 1 PLANTE (-->AVEC BOUTTON)
-        public void Add_Plante()
+        public void Add_Buisson()
         {
             objects.Add(new Buisson(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
         }
@@ -182,9 +191,10 @@ namespace Ecosysteme
 
                         //RENCONTRE HERBIVORE
                         if(item2 is Herbivore)
-                            //Si mm Espece: Reproduction
+                        {   //Si mm Espece: Reproduction
                             if(item is Zebre && item2 is Zebre)
                             {Naissance(item, item2);}
+                        }
                     }
                     
 
@@ -329,11 +339,11 @@ namespace Ecosysteme
                         var position= positions[index];
 
                         //Naissance de 1 nouvelle plante (+Compteur remis à zero)
-                        if (item is Buisson)
+                        if(item is Buisson)
                         {
                             objects.Add(new Buisson(position.Item1, position.Item2, 75, 15, 15));
                             Plante.NaissanceCompteur = 0;
-                        }
+                        }                   
                     }
                 }
             }
