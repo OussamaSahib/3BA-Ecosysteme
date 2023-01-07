@@ -19,8 +19,9 @@ namespace Ecosysteme
 
             objects.Add(new Zebre(900, 500, 75, 15, 15));
             objects.Add(new Zebre(940, 500, 75, 15, 15));
-            //objects.Add(new Tigre(900, 350, 75, 15, 15));
-            objects.Add(new Plante(600, 350,75, 15, 15));
+            objects.Add(new Tigre(1400, 350, 75, 15, 15));
+            objects.Add(new Buisson(400, 500,75, 15, 15));
+            objects.Add(new Buisson(1300, 200, 75, 15, 15));
         }
 
 
@@ -35,7 +36,7 @@ namespace Ecosysteme
         //FCT QUI AJOUTE 1 PLANTE (-->AVEC BOUTTON)
         public void Add_Plante()
         {
-            objects.Add(new Plante(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
+            objects.Add(new Buisson(rnd.Next(min_x, max_x), rnd.Next(min_y, max_y), 75, 15, 15));
         }
         //FCT QUI AJOUTE 1 ZEBRE (-->AVEC BOUTTON)
         public void Add_Zebre()
@@ -328,8 +329,11 @@ namespace Ecosysteme
                         var position= positions[index];
 
                         //Naissance de 1 nouvelle plante (+Compteur remis à zero)
-                        objects.Add(new Plante(position.Item1, position.Item2, 75, 15, 15));
-                        Plante.NaissanceCompteur= 0;
+                        if (item is Buisson)
+                        {
+                            objects.Add(new Buisson(position.Item1, position.Item2, 75, 15, 15));
+                            Plante.NaissanceCompteur = 0;
+                        }
                     }
                 }
             }

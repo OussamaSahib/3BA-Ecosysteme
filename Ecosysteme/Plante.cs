@@ -11,7 +11,7 @@ namespace Ecosysteme
         public int NaissanceSeuilCompteur{get;set;}= 45;
 
 
-        public Plante(double x, double y, int energie, int vie1, int vie2): base(Colors.Green, x, y, energie, vie1, vie2){}
+        public Plante(Color color, double x, double y, int energie, int vie1, int vie2): base(color, x, y, energie, vie1, vie2){}
 
         //ENERGIE+VIE QUI DIMINUE
         public void Energie_Vie()
