@@ -3,6 +3,7 @@ using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Graphics.Text;
+using System;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Ecosysteme
@@ -72,15 +73,15 @@ namespace Ecosysteme
                 }
 
                 //ANIMAL CREE DES DECHETS REGULIERS
-                if(item is Animal)
+                if(item is Animal animal && animal.DechetCompteur>=animal.DechetSeuilCompteur)
                 {
-                    if(item.Energie==75)
-                    {objects.Add(new Dechet(item.X, item.Y));}
+                    {objects.Add(new Dechet(item.X, item.Y));
+                    animal.DechetCompteur = 0;}
                 }
 
 
 
-                //ZONE CONTACT ANIMAL
+                //ZONES ANIMAL
                 //Element rencontré
                 foreach(SimulationObjet item2 in objects.ToList())
                 {
@@ -207,7 +208,7 @@ namespace Ecosysteme
                 }
 
 
-                //ZONE CONTACT PLANTE
+                //ZONES PLANTE
                 //Element rencontré
                 foreach(SimulationObjet item2 in objects.ToList())
                 {
@@ -221,12 +222,13 @@ namespace Ecosysteme
                         double minY= PlanteZone.Y -contactDistance;
                         double maxY= PlanteZone.Y +contactDistance;
 
-                        //Si Element ext. rentre ds la Zone Racine
+                        //Si Element ext. rentre ds Zone Racine
                         if(ElemExt.X>=minX && ElemExt.X<=maxX && ElemExt.Y>=minY && ElemExt.Y<=maxY)
                         {return true;}
                         else 
                         {return false;}
                     }
+
 
                     //ZONE RACINE PLANTE
                     if(item is Plante)
@@ -242,12 +244,36 @@ namespace Ecosysteme
                             }
                         }
                     }
+
+                    //ZONE SEMIS PLANTE
+                    if(item is Plante Plante && Plante.NaissanceCompteur>=Plante.NaissanceSeuilCompteur)
+                    {
+                        //Liste des positions possibles des futurs plantes autour la plante Mère
+                        List<Tuple<double,double>> positions= new List<Tuple<double,double>>
+                        {
+                            new Tuple<double,double>(item.X-75, item.Y),
+                            new Tuple<double,double>(item.X+75, item.Y),
+                            new Tuple<double,double>(item.X, item.Y-75),
+                            new Tuple<double,double>(item.X, item.Y+75)
+                        };
+
+                        //Choix aléatoire  de la position de la liste
+                        Random random= new Random();
+                        int index= random.Next(positions.Count);
+                        var position= positions[index];
+
+                        //Naissance de 1 nouvelle plante (Compteur remis à zero)
+                        objects.Add(new Plante(position.Item1, position.Item2, 75, 15, 15));
+                        Plante.NaissanceCompteur= 0;
+                    }
                 }
             }
 
 
+
+
             //DESSIN
-            foreach (SimulationObjet drawable in objects)
+            foreach(SimulationObjet drawable in objects)
             {
                 if((drawable is Animal || drawable is Plante) && drawable.Vie2!=0)
                 {
@@ -262,7 +288,7 @@ namespace Ecosysteme
                          canvas.FillCircle(new Point(drawable.X, drawable.Y), 13.0);}
 
                         //Si Adulte
-                        if (!animal.isChild)
+                        if(!animal.isChild)
                         {canvas.FillColor= drawable.Color;
                          canvas.FillCircle(new Point(drawable.X, drawable.Y), 25.0);}
 
@@ -270,7 +296,6 @@ namespace Ecosysteme
                         canvas.StrokeColor= Colors.Purple;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
-
                     }
 
 
@@ -285,6 +310,11 @@ namespace Ecosysteme
                         canvas.StrokeColor= Colors.DarkRed;
                         canvas.StrokeSize= 10;
                         canvas.DrawEllipse(Convert.ToSingle(drawable.X)-50, Convert.ToSingle(drawable.Y)-50, 100, 100);
+
+                        //ZONE SEMIS PLANTE
+                        canvas.StrokeColor= Colors.Gray;
+                        canvas.StrokeSize= 10;
+                        canvas.DrawEllipse(Convert.ToSingle(drawable.X)-100, Convert.ToSingle(drawable.Y)-100, 200, 200);
                     }
 
 
