@@ -1,6 +1,11 @@
 # 3BA-Ecosysteme
 ## Diagramme de Classe
-![This is an image](https://github.com/OussamaSahib/3BA-Ecosysteme/blob/master/Diagramme%20Classe%20-IMAGE.png)
+![Diagramme Classe](https://github.com/OussamaSahib/3BA-Ecosysteme/blob/master/Diagramme%20Classe%20-IMAGE.png)
+
+
+## Diagramme de Séquence
+![Diagramme Séquence](https://github.com/OussamaSahib/3BA-Ecosysteme/blob/b8b434ecd086515bd37b493412d01c8df5edadec/Diagramme%20S%C3%A9quence%20-IMAGE.png)
+
 
 ## Principes SOLID
 **Dans le projet, nous pouvons analyser 2 principes SOLID:**
